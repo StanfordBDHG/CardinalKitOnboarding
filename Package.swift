@@ -28,6 +28,7 @@ let package = Package(
         .macOS(.v14)
     ],
     products: [
+        .library(name: "SpeziConsent", targets: ["SpeziConsent"]),
         .library(name: "SpeziOnboarding", targets: ["SpeziOnboarding"])
     ],
     dependencies: [
@@ -37,12 +38,37 @@ let package = Package(
     ] + swiftLintPackage(),
     targets: [
         .target(
-            name: "SpeziOnboarding",
+            name: "SpeziConsent",
             dependencies: [
+                .target(name: "SpeziOnboardingCore"),
                 .product(name: "Spezi", package: "Spezi"),
                 .product(name: "SpeziViews", package: "SpeziViews"),
-                .product(name: "SpeziPersonalInfo", package: "SpeziViews"),
+                .product(name: "SpeziPersonalInfo", package: "SpeziViews")
+            ],
+            swiftSettings: [
+                swiftConcurrency
+            ],
+            plugins: [] + swiftLintPlugin()
+        ),
+        .target(
+            name: "SpeziOnboarding",
+            dependencies: [
+                .target(name: "SpeziConsent"),
+                .target(name: "SpeziOnboardingCore"),
+                .product(name: "Spezi", package: "Spezi"),
+                .product(name: "SpeziViews", package: "SpeziViews"),
                 .product(name: "OrderedCollections", package: "swift-collections")
+            ],
+            swiftSettings: [
+                swiftConcurrency
+            ],
+            plugins: [] + swiftLintPlugin()
+        ),
+        .target(
+            name: "SpeziOnboardingCore",
+            dependencies: [
+                .product(name: "Spezi", package: "Spezi"),
+                .product(name: "SpeziViews", package: "SpeziViews")
             ],
             swiftSettings: [
                 swiftConcurrency
